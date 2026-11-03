@@ -1,36 +1,84 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "autoUpdatesChannel": "stable",
   "permissions": {
-    "allow": [
-      "Bash(npm run *)",
-      "Bash(npm test *)",
-      "Bash(npx vitest *)",
-      "Bash(uv run *)",
-      "Bash(uv sync *)",
-      "Bash(git add *)",
-      "Bash(git commit *)",
-      "Bash(git checkout -b *)",
-      "Bash(git status *)",
-      "Bash(git diff *)",
-      "Bash(git log *)",
-      "Bash(python3 .claude/skills/changelog/changelog.py *)"
+    "deny": [
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.config/gh/**)",
+      "Read(.env)",
+      "Read(**/.env)",
+      "Read(**/.env.local)",
+      "Read(**/.env.*.local)",
+      "Read(**/.env.development)",
+      "Read(**/.env.production)",
+      "Read(**/.env.staging)",
+      "Read(**/.env.test)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Bash(git push *)",
+      "Bash(npm publish *)",
+      "Bash(terraform apply *)",
+      "Bash(terraform destroy *)",
+      "Bash(aws *)",
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(rm -rf *)"
     ],
-    "ask": [
-      "Bash(docker compose *)",
-      "Bash(gh *)"
-    ]
+    "disableBypassPermissionsMode": "disable"
   },
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/format-edited-file.sh"
-          }
-        ]
-      }
-    ]
+  "sandbox": {
+    "enabled": true,
+    "failIfUnavailable": true,
+    "allowUnsandboxedCommands": false,
+    "excludedCommands": [
+      "docker compose *"
+    ],
+    "filesystem": {
+      "allowWrite": [
+        "~/.cache/pre-commit",
+        "~/.cache/uv",
+        "~/.npm"
+      ]
+    },
+    "network": {
+      "allowedDomains": [
+        "github.com",
+        "*.github.com",
+        "registry.npmjs.org",
+        "pypi.org",
+        "files.pythonhosted.org"
+      ]
+    },
+    "credentials": {
+      "files": [
+        {
+          "path": "~/.ssh",
+          "mode": "deny"
+        },
+        {
+          "path": "~/.aws",
+          "mode": "deny"
+        }
+      ],
+      "envVars": [
+        {
+          "name": "ANTHROPIC_API_KEY",
+          "mode": "deny"
+        },
+        {
+          "name": "AWS_ACCESS_KEY_ID",
+          "mode": "deny"
+        },
+        {
+          "name": "AWS_SECRET_ACCESS_KEY",
+          "mode": "deny"
+        },
+        {
+          "name": "GITHUB_TOKEN",
+          "mode": "deny"
+        }
+      ]
+    }
   }
 }
